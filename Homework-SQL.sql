@@ -4,7 +4,7 @@ USE Sakila;
 SELECT first_name,last_name FROM actor; 
 
 #1b
-SELECT UPPER(CONCAT(c.first_name,',',c.last_name)) as 'Actor Name' FROM actor;
+SELECT UPPER(CONCAT(first_name,',',last_name)) as 'Actor Name' FROM actor;
 
 #2a
 SELECT actor_id,first_name,last_name 
@@ -36,16 +36,16 @@ ALTER TABLE actor
 DROP COLUMN description;
 
 #4a
-SELECT last_name, COUNT(*) as 'Number of Actors'
+SELECT last_name, COUNT(last_name) as 'Actor Count'
 FROM actor
 GROUP BY last_name;
 
 
 #4b
-SELECT last_name, COUNT(*) as 'Number of Actors'
+SELECT last_name, COUNT(last_name) as 'Actor Count'
 FROM actor
 GROUP BY last_name
-WITH COUNT(*) >=2;
+HAVING COUNT(last_name) >=2;
 
 #4c
 UPDATE actor
@@ -54,8 +54,8 @@ WHERE first_name = 'GROUCHO' and last_name = 'WILLIAMS';
 
 #4d
 UPDATE actor
-SET first_name = 'Groucho'
-Where frist_name = 'HARPO' and last_name = 'WILLIAMS';
+SET first_name = 'GROUCHO'
+Where first_name = 'HARPO' and last_name = 'WILLIAMS';
 
 #5a
 DESCRIBE sakila.address;
@@ -74,7 +74,7 @@ ON staff.staff_id = payment.staff_id
 AND payment_date LIKE '2005-08%';
 
 #6c
-SELECT f.title as 'FILM TITLE', COUNT(fa.actor_id) as 'Number of Actors'
+SELECT f.title as 'FILM TITLE', COUNT(fa.actor_id) as 'Actor Count'
 FROM film_actor as fa
 INNER JOIN film as f
 ON fa.film_id = f.film_id
@@ -165,7 +165,7 @@ ON (s.store_id = i.store_id)
 GROUP BY s.store_id;
 
 #7g
-SELECT s.store_id, city.city, country.country
+SELECT s.store_id, cty.city, ctry.country
 FROM store as s
 JOIN address as a 
 ON (s.address_id = a.address_id)
@@ -189,7 +189,7 @@ GROUP BY c.name ORDER BY Gross LIMIT 5;
 
 #8a
 CREATE VIEW top_five_revenue as
-SELECT c.name as 'Genre', SUM(p.amount) as 'Gross'
+SELECT cat.name as 'Genre', SUM(p.amount) as 'Gross'
 FROM category as cat
 JOIN film_category as fc
 ON (cat.category_id = fc.category_id)
@@ -199,7 +199,7 @@ JOIN rental as r
 ON (i.inventory_id = r.inventory_id)
 JOIN payment as p
 ON (r.rental_id = p.rental_id)
-GROUP BY c.name ORDER BY Gross LIMIT 5;
+GROUP BY cat.name ORDER BY Gross LIMIT 5;
 
 #8b
 SELECT * FROM top_five_revenue;
